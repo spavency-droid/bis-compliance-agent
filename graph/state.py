@@ -5,6 +5,8 @@ from models.standard import BISStandard
 
 class ComplianceState(TypedDict):
 
+    product_description: str
+
     product_profile: dict
 
     standards: list[BISStandard]

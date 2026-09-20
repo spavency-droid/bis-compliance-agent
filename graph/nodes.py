@@ -1,5 +1,6 @@
 from langgraph.types import interrupt
 
+from agents.initial_profile import extract_product_profile
 from agents.clarification_agent import generate_clarification_question
 from agents.profile_updater import update_product_profile
 from models.product_profile import ProductProfile
@@ -21,6 +22,16 @@ def _get_profile(state: ComplianceState) -> ProductProfile:
     return ProductProfile(**profile)
 
 
+def initial_profile_node(state: ComplianceState):
+    profile = extract_product_profile(
+        state["product_description"]
+    )
+
+    return {
+        "product_profile": profile.model_dump()
+    }
+    
+    
 def clarification_node(state: ComplianceState):
 
     profile = _get_profile(state)
