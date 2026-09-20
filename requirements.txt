@@ -8,3 +8,4 @@ pandas
 pydantic
 python-dotenv
 faiss-cpu
+sentence-transformers
