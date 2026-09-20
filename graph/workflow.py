@@ -2,9 +2,13 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
 
 from graph.state import ComplianceState
+
 from graph.nodes import (
     clarification_node,
-    profile_update_node
+    profile_update_node,
+    retrieval_node,
+    decision_node,
+    route_after_decision
 )
 
 
@@ -22,6 +26,16 @@ def build_workflow():
         profile_update_node
     )
 
+    workflow.add_node(
+        "retrieval",
+        retrieval_node
+    )
+
+    workflow.add_node(
+        "decision",
+        decision_node
+    )
+
     workflow.add_edge(
         START,
         "clarification"
@@ -34,7 +48,21 @@ def build_workflow():
 
     workflow.add_edge(
         "profile_update",
-        END
+        "retrieval"
+    )
+
+    workflow.add_edge(
+        "retrieval",
+        "decision"
+    )
+
+    workflow.add_conditional_edges(
+        "decision",
+        route_after_decision,
+        {
+            "continue": "clarification",
+            "end": END
+        }
     )
 
     checkpointer = MemorySaver()
